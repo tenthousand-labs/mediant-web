@@ -24,6 +24,10 @@ export default function LogIn() {
       return;
     }
 
+    const data = await res.json();
+    console.log("Login successful:", data);
+    sessionStorage.setItem("token", data.token);
+
     // Redirect to dashboard or reload
     window.location.href = "/dashboard";
   }

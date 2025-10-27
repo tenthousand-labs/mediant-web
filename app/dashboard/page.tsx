@@ -1,16 +1,27 @@
-import { use } from "react";
+"use client";
 
-export default async function Dashboard() {
-const res = await fetch(`${process.env.NEXT_PUBLIC_MEDIANT_API_URL}/user`, {
-    credentials: "include",
-    // 👇 Important to forward the cookie when deployed on the same domain
-    // Next.js automatically sends cookies in SSR requests
-    cache: "no-store",
-  });
+import { useEffect, useState } from "react";
 
-  console.log(res.ok);
+export default function Dashboard() {
+  const [name, setName] = useState<string | null>(null);
 
-    const user = await res.json();
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    //if (!token) return;
+
+    (async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_MEDIANT_API_URL}/user`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      console.log('User fetch response:', res);
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setName(data.name);
+    })();
+  }, []);
 
 
   return (
@@ -21,7 +32,7 @@ const res = await fetch(`${process.env.NEXT_PUBLIC_MEDIANT_API_URL}/user`, {
             Welcome.
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            {user.name}
+            {name}
           </p>
         </div>
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
