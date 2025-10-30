@@ -1,20 +1,19 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import GitHubTokenForm from '../github/page';
 
 export default function Dashboard() {
   const [name, setName] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    //if (!token) return;
-
     (async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_MEDIANT_API_URL}/user`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_MEDIANT_API_URL}/user`,
+        {
+          credentials: 'include',
+        }
+      );
       console.log('User fetch response:', res);
       if (!res.ok) return;
 
@@ -22,7 +21,6 @@ export default function Dashboard() {
       setName(data.name);
     })();
   }, []);
-
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -36,7 +34,7 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-
+          <GitHubTokenForm />
         </div>
       </main>
     </div>
