@@ -42,7 +42,7 @@ export default function GitHubTokenForm() {
       <h2 className="text-xl font-semibold mb-4">GitHub Token</h2>
       <form onSubmit={handleSubmit} className="flex gap-2">
         <input
-          type="text"
+          type="password"
           value={token}
           onChange={(e) => setToken(e.target.value)}
           placeholder="Enter your GitHub token"

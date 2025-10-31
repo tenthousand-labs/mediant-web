@@ -25,13 +25,11 @@ export async function login(formData: FormData) {
 
   const cookieStore = await cookies();
 
-  console.log('Setting token cookie:', token);
-
   cookieStore.set({
     name: 'token',
     value: token,
     httpOnly: true,
-    secure: false,
+    secure: true,
     sameSite: 'lax',
     path: '/',
   });
