@@ -1,17 +1,40 @@
-import { login } from './actions';
+'use client';
+
+import { login } from '../lib/definitions/login';
 import { Field, Input, Label } from '@headlessui/react';
 import clsx from 'clsx';
+import { useActionState } from 'react';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 export default function Page() {
+  const [state, action, pending] = useActionState(login, null);
+
   return (
     <main className="relative isolate m-4">
       <div className="mx-auto max-w-2xl my-48">
         <h1 className="text-center text-2xl font-bold tracking-tight">
           Welcome back
         </h1>
-        <form action={login}>
+
+        <div className="h-5 mt-4">
+          {state?.api?.errors && (
+            <p className="text-sm font-bold text-red-500 text-center">
+              {state.api.errors}
+            </p>
+          )}
+        </div>
+
+        <form action={action}>
           <Field className="my-4">
-            <Label className="text-sm/6 font-bold">Email</Label>
+            <div className="flex justify-between">
+              <Label className="text-sm/6 font-bold">Email</Label>
+              {state?.email?.errors && (
+                <Label className="text-sm/6 font-bold text-red-500">
+                  {state.email.errors}
+                </Label>
+              )}
+            </div>
+
             <Input
               id="email"
               name="email"
@@ -26,7 +49,14 @@ export default function Page() {
           </Field>
 
           <Field className="my-4">
-            <Label className="text-sm/6 font-bold">Password</Label>
+            <div className="flex justify-between">
+              <Label className="text-sm/6 font-bold">Password</Label>
+              {state?.password?.errors && (
+                <Label className="text-sm/6 font-bold text-red-500">
+                  {state.password.errors[0]}
+                </Label>
+              )}
+            </div>
             <Input
               id="password"
               name="password"

@@ -1,42 +1,19 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import GitHubTokenForm from '../github/page';
+import { getAuthenticatedUser } from '../lib/dal';
 
-export default function Dashboard() {
-  const [name, setName] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_MEDIANT_API_URL}/user`,
-        {
-          credentials: 'include',
-        }
-      );
-      console.log('User fetch response:', res);
-      if (!res.ok) return;
-
-      const data = await res.json();
-      setName(data.name);
-    })();
-  }, []);
+export default async function Dashboard() {
+  const user = await getAuthenticatedUser();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Welcome.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            {name}
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <GitHubTokenForm />
-        </div>
-      </main>
-    </div>
+    <main className="relative isolate m-4">
+      <div className="mx-auto max-w-2xl my-48">
+        <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+          Welcome, {user.name}!
+        </h1>
+      </div>
+      <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+        <GitHubTokenForm />
+      </div>
+    </main>
   );
 }

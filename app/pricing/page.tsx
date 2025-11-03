@@ -1,8 +1,7 @@
 export default function Page() {
   return (
     <div>
-      <p>Pricing Page</p>
-      <p>5 Euros pls</p>
+      <p>Pricing information coming soon. Please check back later.</p>
     </div>
   );
 }
