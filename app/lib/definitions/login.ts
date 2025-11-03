@@ -72,7 +72,9 @@ export async function login(
 
   const cookieStore = await cookies();
 
-  const expiresAt = new Date(Date.now() + 14 * 60 * 1000);
+  const FOURTEEN_MINUTES = 14 * 60 * 1000;
+
+  const expiresAt = new Date(Date.now() + FOURTEEN_MINUTES);
 
   cookieStore.set({
     name: 'token',
