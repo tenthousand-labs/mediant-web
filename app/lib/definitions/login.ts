@@ -47,14 +47,11 @@ export async function login(
 
   const { email, password } = validatedFields.data;
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_MEDIANT_API_URL}/auth/login`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    }
-  );
+  const res = await fetch(`${process.env.API_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
 
   if (!res.ok) {
     let message = 'Login failed';
@@ -77,10 +74,10 @@ export async function login(
   const expiresAt = new Date(Date.now() + FOURTEEN_MINUTES);
 
   cookieStore.set({
-    name: 'token',
+    name: 'jwt',
     value: token,
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     expires: expiresAt,
     sameSite: 'lax',
     path: '/',

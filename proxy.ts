@@ -7,10 +7,10 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    { source: '/', has: [{ type: 'cookie', key: 'token' }], locale: false },
+    { source: '/', has: [{ type: 'cookie', key: 'jwt' }], locale: false },
     {
       source: '/login',
-      has: [{ type: 'cookie', key: 'token' }],
+      has: [{ type: 'cookie', key: 'jwt' }],
       locale: false,
     },
   ],
