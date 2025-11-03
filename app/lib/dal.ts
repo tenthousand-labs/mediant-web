@@ -29,7 +29,6 @@ export const getAuthenticatedUser = cache(async (): Promise<User> => {
     const user = (await res.json()) as User;
     return user;
   } catch {
-    console.error('Error fetching user from API:', Error);
     redirect('/login');
   }
 });
