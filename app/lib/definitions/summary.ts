@@ -1,18 +1,20 @@
 'use server';
 
+import { redirect } from 'next/navigation';
+import { verifyJWT } from '../dal';
 import * as z from 'zod';
 
-export type PromptFormState = {
+export type SummaryFormState = {
   since?: { errors: string[] };
   until?: { errors: string[] };
   prompt?: { errors: string[] };
   api?: { message: string };
 };
 
-const promptFormSchema = z
+const summaryFormSchema = z
   .object({
     since: z
-      .string({ required_error: 'Select a start date.' })
+      .string({ error: 'Select a start date.' })
       .refine((value) => value.trim().length > 0, {
         message: 'Select a start date.',
       })
@@ -20,7 +22,7 @@ const promptFormSchema = z
         message: 'Enter a valid date.',
       }),
     until: z
-      .string({ required_error: 'Select an end date.' })
+      .string({ error: 'Select an end date.' })
       .refine((value) => value.trim().length > 0, {
         message: 'Select an end date.',
       })
@@ -28,26 +30,30 @@ const promptFormSchema = z
         message: 'Enter a valid date.',
       }),
     prompt: z
-      .string({ required_error: 'Describe your request.' })
+      .string({ error: 'Describe your request.' })
       .trim()
-      .min(1, { message: 'Describe your request.' })
       .refine((value) => value.split(/\s+/).filter(Boolean).length <= 100, {
         message: 'Use 100 words or fewer.',
       }),
   })
   .refine(
-    ({ since, until }) => new Date(since).getTime() <= new Date(until).getTime(),
+    ({ since, until }) =>
+      new Date(since).getTime() <= new Date(until).getTime(),
     {
       message: 'End date must be on or after the start date.',
       path: ['until'],
     }
   );
 
-export async function submitPrompt(
-  _state: PromptFormState | null,
+export async function createSummary(
+  _state: SummaryFormState | null,
   formData: FormData
-): Promise<PromptFormState | null> {
-  const validatedFields = promptFormSchema.safeParse({
+): Promise<SummaryFormState | null> {
+  const jwt = await verifyJWT();
+
+  if (!jwt) redirect('/login');
+
+  const validatedFields = summaryFormSchema.safeParse({
     since: formData.get('since'),
     until: formData.get('until'),
     prompt: formData.get('prompt'),
@@ -65,11 +71,28 @@ export async function submitPrompt(
 
   const { since, until, prompt } = validatedFields.data;
 
-  console.log('Prompt submitted', { since, until, prompt });
+  // Convert since and until to ISO8601 format
+  const sinceISO = new Date(since).toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const untilISO = new Date(until).toISOString().replace(/\.\d{3}Z$/, 'Z');
 
-  return {
-    api: {
-      message: 'Your request was submitted successfully.',
+  console.log('Summary requested', {
+    since: sinceISO,
+    until: untilISO,
+    prompt,
+  });
+
+  const res = await fetch(`${process.env.API_URL}/summaries`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
     },
-  };
+    body: JSON.stringify({ since: sinceISO, until: untilISO, prompt }),
+  });
+
+  const text = await res.text();
+
+  console.log('API response:', { status: res.status, body: text });
+
+  return null;
 }

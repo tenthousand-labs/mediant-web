@@ -17,7 +17,7 @@ export default function Page() {
 
         <div className="h-5 mt-4">
           {state?.api?.errors && (
-            <p className="text-sm font-bold text-red-500 text-center">
+            <p className="font-bold text-red-500 text-center">
               {state.api.errors}
             </p>
           )}
@@ -26,9 +26,9 @@ export default function Page() {
         <form action={action}>
           <Field className="my-4">
             <div className="flex justify-between">
-              <Label className="text-sm/6 font-bold">Email</Label>
+              <Label className="font-bold">Email</Label>
               {state?.email?.errors && (
-                <Label className="text-sm/6 font-bold text-red-500">
+                <Label className="font-bold text-red-500">
                   {state.email.errors}
                 </Label>
               )}
@@ -41,7 +41,7 @@ export default function Page() {
               required
               autoComplete="email"
               className={clsx(
-                'mt-2 block w-full rounded-lg px-3 py-1.5 text-sm/6 outline-2 outline-black/50 dark:outline-white/50',
+                'mt-2 block w-full rounded-lg px-3 py-1.5 outline-2 outline-black/50 dark:outline-white/50',
                 'focus:not-data-focus:outline-black/50 dark:focus:not-data-focus:outline-white/50 data-focus:outline-black dark:data-focus:outline-white'
               )}
             />
@@ -49,9 +49,9 @@ export default function Page() {
 
           <Field className="my-4">
             <div className="flex justify-between">
-              <Label className="text-sm/6 font-bold">Password</Label>
+              <Label className="font-bold">Password</Label>
               {state?.password?.errors && (
-                <Label className="text-sm/6 font-bold text-red-500">
+                <Label className="font-bold text-red-500">
                   {state.password.errors[0]}
                 </Label>
               )}
@@ -63,7 +63,7 @@ export default function Page() {
               required
               autoComplete="current-password"
               className={clsx(
-                'mt-2 block w-full rounded-lg px-3 py-1.5 text-sm/6 outline-2 outline-black/50 dark:outline-white/50',
+                'mt-2 block w-full rounded-lg px-3 py-1.5 outline-2 outline-black/50 dark:outline-white/50',
                 'focus:not-data-focus:outline-black/50 dark:focus:not-data-focus:outline-white/50 data-focus:outline-black dark:data-focus:outline-white'
               )}
             />
@@ -71,9 +71,10 @@ export default function Page() {
 
           <button
             type="submit"
-            className="flex w-full justify-center my-12 rounded-lg bg-pink-700 px-3 py-1.5 text-sm/6 font-bold hover:bg-pink-600 focus-visible:outline-pink-500 text-white dark:text-black"
+            disabled={pending}
+            className="flex w-full justify-center my-12 rounded-lg bg-pink-700 px-3 py-1.5 font-bold hover:bg-pink-600 focus-visible:outline-pink-500 disabled:cursor-not-allowed disabled:bg-pink-500/30 text-white dark:text-black"
           >
-            Log In
+            {pending ? 'Logging In...' : 'Log In'}
           </button>
         </form>
       </div>
