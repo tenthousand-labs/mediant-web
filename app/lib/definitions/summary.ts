@@ -75,12 +75,6 @@ export async function createSummary(
   const sinceISO = new Date(since).toISOString().replace(/\.\d{3}Z$/, 'Z');
   const untilISO = new Date(until).toISOString().replace(/\.\d{3}Z$/, 'Z');
 
-  console.log('Summary requested', {
-    since: sinceISO,
-    until: untilISO,
-    prompt,
-  });
-
   const res = await fetch(`${process.env.API_URL}/summaries`, {
     method: 'POST',
     headers: {
@@ -91,8 +85,6 @@ export async function createSummary(
   });
 
   const text = await res.text();
-
-  console.log('API response:', { status: res.status, body: text });
 
   return null;
 }
