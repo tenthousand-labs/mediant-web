@@ -117,7 +117,7 @@ export default function CreateSummaryForm({
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex flex-1 w-full items-center justify-center rounded-lg bg-pink-700 mt-8 px-4 py-2 text-sm font-semibold text-white transition hover:bg-pink-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-600 disabled:cursor-not-allowed disabled:bg-pink-700/60 dark:text-black"
+          className="inline-flex flex-1 items-center justify-center rounded-lg bg-pink-700 mt-8 px-4 py-2 text-sm font-semibold text-white transition hover:bg-pink-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-600 disabled:cursor-not-allowed disabled:bg-pink-700/60 dark:text-black"
         >
           {pending ? 'Creating…' : 'Create Summary'}
         </button>
