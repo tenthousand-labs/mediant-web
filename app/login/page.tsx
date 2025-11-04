@@ -4,7 +4,6 @@ import { login } from '../lib/definitions/login';
 import { Field, Input, Label } from '@headlessui/react';
 import clsx from 'clsx';
 import { useActionState } from 'react';
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 export default function Page() {
   const [state, action, pending] = useActionState(login, null);
