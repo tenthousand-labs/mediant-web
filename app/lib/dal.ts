@@ -5,30 +5,32 @@ import { redirect } from 'next/navigation';
 import { cache } from 'react';
 import { User } from './definitions/user';
 
-export const verifySession = cache(async () => {
-  const token = (await cookies()).get('jwt')?.value;
+export const verifyJWT = cache(async (): Promise<string | null> => {
+  const jwt = (await cookies()).get('jwt')?.value;
 
-  if (!token) {
-    redirect('/login');
+  if (!jwt) {
+    return null;
   }
 
-  return { isAuth: true, token: token };
+  return jwt;
 });
 
 export const getAuthenticatedUser = cache(async (): Promise<User> => {
-  const session = await verifySession();
+  const jwt = await verifyJWT();
 
-  if (!session) redirect('/login');
+  if (!jwt) redirect('/login');
 
-  try {
-    const res = await fetch(`${process.env.API_URL}/user`, {
-      headers: {
-        Authorization: `Bearer ${session.token}`,
-      },
-    });
-    const user = (await res.json()) as User;
-    return user;
-  } catch {
+  const res = await fetch(`${process.env.API_URL}/user`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!res.ok) {
     redirect('/login');
   }
+
+  const user = (await res.json()) as User;
+
+  return user;
 });

@@ -69,9 +69,9 @@ export async function login(
 
   const cookieStore = await cookies();
 
-  const FOURTEEN_MINUTES = 14 * 60 * 1000;
+  const NINE_MINUTES = 9 * 60 * 1000;
 
-  const expiresAt = new Date(Date.now() + FOURTEEN_MINUTES);
+  const expiresAt = new Date(Date.now() + NINE_MINUTES);
 
   cookieStore.set({
     name: 'jwt',
