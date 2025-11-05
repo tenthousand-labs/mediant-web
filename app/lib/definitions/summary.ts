@@ -85,7 +85,7 @@ export async function createSummary(
   });
 
   if (!res.ok) {
-    let message = 'Login failed';
+    let message = 'Failed to create summary';
     try {
       const data = await res.json();
       if (data?.reason) message = data.reason;
@@ -95,8 +95,6 @@ export async function createSummary(
     }
     return { api: { error: message } };
   }
-
-  const text = await res.text();
 
   return null;
 }
