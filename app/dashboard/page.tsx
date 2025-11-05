@@ -1,4 +1,5 @@
 import CreateSummaryForm from '../components/CreateSummaryForm';
+import { SummaryList } from '../components/summary-list';
 import { getAuthenticatedUser } from '../lib/dal';
 
 export default async function Dashboard() {
@@ -11,6 +12,8 @@ export default async function Dashboard() {
           Welcome, {user.name}!
         </h1>
         <CreateSummaryForm />
+
+        <SummaryList />
       </div>
     </main>
   );

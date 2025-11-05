@@ -1,4 +1,6 @@
-import Link from "next/link";
+import Link from 'next/link';
+import { verifyJWT } from '../lib/dal';
+import { redirect } from 'next/navigation';
 
 interface Summary {
   id: string;
@@ -9,10 +11,10 @@ interface Summary {
 }
 
 function formatDate(date: string) {
-  return new Intl.DateTimeFormat("en", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+  return new Intl.DateTimeFormat('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   }).format(new Date(date));
 }
 
@@ -25,9 +27,17 @@ function getPreview(text: string, length = 160) {
 }
 
 export async function SummaryList() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_MEDIANT_API_URL}/summaries`, {
-    credentials: "include",
-    cache: "no-store",
+  const jwt = await verifyJWT();
+
+  if (!jwt) redirect('/login');
+
+  const res = await fetch(`${process.env.API_URL}/summaries`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    credentials: 'include',
+    cache: 'no-store',
   });
 
   if (!res.ok) {
