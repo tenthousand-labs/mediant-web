@@ -37,9 +37,9 @@ export default function CreateSummaryForm({
     >
       {title ? <h2 className="text-lg tracking-tight">{title}</h2> : null}
 
-      {state?.api?.message ? (
+      {state?.api?.error ? (
         <p className="text-sm font-medium text-emerald-600">
-          {state.api.message}
+          {state.api.error}
         </p>
       ) : null}
 

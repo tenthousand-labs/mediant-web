@@ -8,7 +8,7 @@ export type SummaryFormState = {
   since?: { errors: string[] };
   until?: { errors: string[] };
   prompt?: { errors: string[] };
-  api?: { message: string };
+  api?: { error: string };
 };
 
 const summaryFormSchema = z
@@ -83,6 +83,18 @@ export async function createSummary(
     },
     body: JSON.stringify({ since: sinceISO, until: untilISO, prompt }),
   });
+
+  if (!res.ok) {
+    let message = 'Login failed';
+    try {
+      const data = await res.json();
+      if (data?.reason) message = data.reason;
+    } catch {
+      const text = await res.text();
+      message = text || message;
+    }
+    return { api: { error: message } };
+  }
 
   const text = await res.text();
 
