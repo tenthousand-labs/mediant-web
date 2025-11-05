@@ -1,37 +1,40 @@
 'use client';
 
 import { useActionState } from 'react';
-import {
-  createSummary,
-  type SummaryFormState,
-} from '../lib/definitions/summary';
 
-const INITIAL_STATE: SummaryFormState | null = null;
-const FIELD_STYLES =
-  'mt-2 block w-full rounded-lg px-3 py-1.5 outline-2 outline-black/50 dark:outline-white/50 focus:not-data-focus:outline-black/50 dark:focus:not-data-focus:outline-white/50 data-focus:outline-black dark:data-focus:outline-white';
+import { createSummary, type SummaryActionState } from '@actions/summaries';
+import Button from '@components/ui/Button';
+import FieldError from '@components/ui/FieldError';
+import Input from '@components/ui/Input';
 
-type PromptRequestFormProps = {
+const INITIAL_STATE: SummaryActionState | null = null;
+
+type CreateSummaryFormProps = {
   className?: string;
   title?: string;
 };
 
+const FIELD_STYLES =
+  'mt-2 block w-full rounded-lg px-3 py-1.5 outline-2 outline-black/50 dark:outline-white/50 focus:not-data-focus:outline-black/50 dark:focus:not-data-focus:outline-white/50 data-focus:outline-black dark:data-focus:outline-white';
+
 export default function CreateSummaryForm({
   className,
   title = 'Describe your request',
-}: PromptRequestFormProps) {
-  const [state, action, pending] = useActionState(createSummary, INITIAL_STATE);
+}: CreateSummaryFormProps) {
+  const [state, formAction, pending] = useActionState(
+    createSummary,
+    INITIAL_STATE
+  );
 
-  // Get today's and last month's date in yyyy-mm-dd format
   const today = new Date();
   const lastMonth = new Date(today);
   lastMonth.setMonth(today.getMonth() - 1);
+
   const formatDate = (date: Date) => date.toISOString().slice(0, 10);
-  const todayStr = formatDate(today);
-  const lastMonthStr = formatDate(lastMonth);
 
   return (
     <form
-      action={action}
+      action={formAction}
       className={['space-y-6', className].filter(Boolean).join(' ')}
       noValidate
     >
@@ -60,14 +63,10 @@ export default function CreateSummaryForm({
           required
           className={FIELD_STYLES}
         />
-        {state?.prompt?.errors?.length ? (
-          <p className="text-xs font-medium text-red-500">
-            {state.prompt.errors[0]}
-          </p>
-        ) : null}
+        <FieldError message={state?.prompt?.errors?.[0]} />
       </fieldset>
 
-      <div className="flex flex-row justify-between gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <fieldset className="flex-1">
           <label
             htmlFor="since"
@@ -75,19 +74,14 @@ export default function CreateSummaryForm({
           >
             Since
           </label>
-          <input
+          <Input
             id="since"
             name="since"
             type="date"
             required
-            className={FIELD_STYLES}
-            defaultValue={lastMonthStr}
+            defaultValue={formatDate(lastMonth)}
           />
-          {state?.since?.errors?.length ? (
-            <p className="text-xs font-medium text-red-500">
-              {state.since.errors[0]}
-            </p>
-          ) : null}
+          <FieldError message={state?.since?.errors?.[0]} />
         </fieldset>
 
         <fieldset className="flex-1">
@@ -97,29 +91,20 @@ export default function CreateSummaryForm({
           >
             Until
           </label>
-          <input
+          <Input
             id="until"
             name="until"
             type="date"
             required
-            className={FIELD_STYLES}
-            defaultValue={todayStr}
+            defaultValue={formatDate(today)}
           />
-          {state?.until?.errors?.length ? (
-            <p className="text-xs font-medium text-red-500">
-              {state.until.errors[0]}
-            </p>
-          ) : null}
+          <FieldError message={state?.until?.errors?.[0]} />
         </fieldset>
-
-        <button
-          type="submit"
-          disabled={pending}
-          className="inline-flex flex-1 items-center justify-center rounded-lg bg-pink-700 mt-8 px-4 py-2 text-sm font-semibold text-white transition hover:bg-pink-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-600 disabled:cursor-not-allowed disabled:bg-pink-700/60 dark:text-black"
-        >
-          {pending ? 'Creating…' : 'Create Summary'}
-        </button>
       </div>
+
+      <Button type="submit" disabled={pending} className="w-full md:w-auto">
+        {pending ? 'Creating…' : 'Create Summary'}
+      </Button>
     </form>
   );
 }
