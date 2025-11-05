@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const summarySchema = z
   .object({
     since: z
-      .string({ required_error: 'Select a start date.' })
+      .string({ error: 'Select a start date.' })
       .refine((value) => value.trim().length > 0, {
         message: 'Select a start date.',
       })
@@ -11,7 +11,7 @@ export const summarySchema = z
         message: 'Enter a valid date.',
       }),
     until: z
-      .string({ required_error: 'Select an end date.' })
+      .string({ error: 'Select an end date.' })
       .refine((value) => value.trim().length > 0, {
         message: 'Select an end date.',
       })
@@ -19,7 +19,7 @@ export const summarySchema = z
         message: 'Enter a valid date.',
       }),
     prompt: z
-      .string({ required_error: 'Describe your request.' })
+      .string({ error: 'Describe your request.' })
       .trim()
       .refine((value) => value.length > 0, {
         message: 'Describe your request.',
@@ -29,7 +29,8 @@ export const summarySchema = z
       }),
   })
   .refine(
-    ({ since, until }) => new Date(since).getTime() <= new Date(until).getTime(),
+    ({ since, until }) =>
+      new Date(since).getTime() <= new Date(until).getTime(),
     {
       message: 'End date must be on or after the start date.',
       path: ['until'],
