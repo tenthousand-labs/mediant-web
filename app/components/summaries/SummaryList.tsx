@@ -24,9 +24,7 @@ function getPreview(text: string, length = 160) {
   return `${text.slice(0, length - 1)}…`;
 }
 
-export default async function SummaryList({
-  className,
-}: SummaryListProps) {
+export default async function SummaryList({ className }: SummaryListProps) {
   const token = await verifySession({ redirectToLogin: true });
 
   if (!token) {
@@ -64,7 +62,14 @@ export default async function SummaryList({
   }
 
   return (
-    <ul className={['flex w-full flex-col divide-y divide-zinc-200 dark:divide-zinc-800', className].filter(Boolean).join(' ')}>
+    <ul
+      className={[
+        'flex w-full flex-col divide-y divide-zinc-200 dark:divide-zinc-800',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       {summaries.map((summary) => (
         <SummaryListItem key={summary.id} summary={summary} />
       ))}
@@ -81,7 +86,7 @@ function SummaryListItem({ summary }: SummaryListItemProps) {
     <li>
       <Link
         href={`/summary/${summary.id}`}
-        className="flex flex-col gap-1 rounded-lg px-4 py-4 transition hover:bg-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500 dark:hover:bg-zinc-900"
+        className="flex flex-col gap-1 rounded-lg my-4 px-4 py-4 transition hover:bg-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500 dark:hover:bg-zinc-900"
       >
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           {formatDate(summary.since)} – {formatDate(summary.until)}
