@@ -1,15 +1,20 @@
 'use client';
 
-import Link from 'next/link';
-import { useState } from 'react';
 import { Dialog, DialogPanel } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
+import Link from 'next/link';
+import { useState } from 'react';
 
-export default function Header() {
+type HeaderProps = {
+  className?: string;
+};
+
+export default function Header({ className }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="absolute inset-x-0 top-0 z-50">
+    <header className={clsx('absolute inset-x-0 top-0 z-50', className)}>
       <nav
         aria-label="Global"
         className="flex items-center justify-between p-6 lg:px-8"
@@ -30,7 +35,7 @@ export default function Header() {
           </button>
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <Link href="/login" className="">
+          <Link href="/login" className="font-semibold">
             Log in
           </Link>
         </div>
@@ -41,7 +46,7 @@ export default function Header() {
         className="lg:hidden"
       >
         <div className="fixed inset-0 z-50" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white dark:bg-black p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-100/10">
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 dark:bg-black sm:max-w-sm sm:ring-1 sm:ring-white/10">
           <div className="flex items-center justify-between">
             <Link
               href="/"
@@ -65,7 +70,7 @@ export default function Header() {
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className=""
+                  className="font-semibold"
                 >
                   Log in
                 </Link>

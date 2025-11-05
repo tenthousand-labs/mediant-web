@@ -1,14 +1,12 @@
 import Link from 'next/link';
-import { verifyJWT } from '../lib/dal';
-import { redirect } from 'next/navigation';
 
-interface Summary {
-  id: string;
-  text: string;
-  since: string;
-  until: string;
-  createdAt: string;
-}
+import { getSummaries } from '@lib/api/summaries';
+import { verifySession } from '@lib/auth/verifySession';
+import type { Summary } from '@lib/types/summary';
+
+type SummaryListProps = {
+  className?: string;
+};
 
 function formatDate(date: string) {
   return new Intl.DateTimeFormat('en', {
@@ -26,40 +24,47 @@ function getPreview(text: string, length = 160) {
   return `${text.slice(0, length - 1)}…`;
 }
 
-export async function SummaryList() {
-  const jwt = await verifyJWT();
+export default async function SummaryList({
+  className,
+}: SummaryListProps) {
+  const token = await verifySession({ redirectToLogin: true });
 
-  if (!jwt) redirect('/login');
+  if (!token) {
+    return null;
+  }
 
-  const res = await fetch(`${process.env.API_URL}/summaries`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${jwt}`,
-    },
-    credentials: 'include',
-    cache: 'no-store',
-  });
+  let summaries: Summary[] = [];
+  let error: string | null = null;
 
-  if (!res.ok) {
+  try {
+    summaries = await getSummaries(token);
+  } catch (err) {
+    error =
+      err instanceof Error
+        ? err.message
+        : 'We could not load your summaries. Please try again later.';
+  }
+
+  if (error) {
     return (
-      <div className="text-sm text-red-600 dark:text-red-400">
-        We couldn&apos;t load your summaries. Please try again later.
+      <div className={className}>
+        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       </div>
     );
   }
 
-  const summaries: Summary[] = await res.json();
-
   if (!summaries.length) {
     return (
-      <div className="text-sm text-zinc-500 dark:text-zinc-400">
-        No summaries available yet.
+      <div className={className}>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          No summaries available yet.
+        </p>
       </div>
     );
   }
 
   return (
-    <ul className="flex w-full flex-col divide-y divide-zinc-200 dark:divide-zinc-800">
+    <ul className={['flex w-full flex-col divide-y divide-zinc-200 dark:divide-zinc-800', className].filter(Boolean).join(' ')}>
       {summaries.map((summary) => (
         <SummaryListItem key={summary.id} summary={summary} />
       ))}
@@ -67,11 +72,11 @@ export async function SummaryList() {
   );
 }
 
-interface SummaryListItemProps {
+type SummaryListItemProps = {
   summary: Summary;
-}
+};
 
-export function SummaryListItem({ summary }: SummaryListItemProps) {
+function SummaryListItem({ summary }: SummaryListItemProps) {
   return (
     <li>
       <Link

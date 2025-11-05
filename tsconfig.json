@@ -19,7 +19,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@components/*": ["app/components/*"],
+      "@lib/*": ["app/lib/*"],
+      "@actions/*": ["app/(routes)/*/actions"]
     }
   },
   "include": [
