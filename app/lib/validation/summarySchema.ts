@@ -21,9 +21,6 @@ export const summarySchema = z
     prompt: z
       .string({ error: 'Describe your request.' })
       .trim()
-      .refine((value) => value.length > 0, {
-        message: 'Describe your request.',
-      })
       .refine((value) => value.split(/\s+/).filter(Boolean).length <= 100, {
         message: 'Use 100 words or fewer.',
       }),
