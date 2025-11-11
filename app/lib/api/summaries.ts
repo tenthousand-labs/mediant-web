@@ -78,3 +78,41 @@ export async function getSummaries(token: string): Promise<Summary[]> {
 
   return response.json() as Promise<Summary[]>;
 }
+
+export class SummaryNotFoundError extends Error {
+  constructor() {
+    super('Summary not found');
+    this.name = 'SummaryNotFoundError';
+  }
+}
+
+export async function getSummary(token: string, id: string): Promise<Summary> {
+  const response = await fetch(`${process.env.API_URL}/summaries/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    cache: 'no-store',
+    credentials: 'include',
+  });
+
+  if (response.status === 404) {
+    throw new SummaryNotFoundError();
+  }
+
+  if (!response.ok) {
+    let errorMessage = 'Failed to load summary';
+
+    try {
+      const data = (await response.json()) as FetchErrorShape;
+      errorMessage = extractApiError(data);
+    } catch {
+      const text = await response.text();
+      errorMessage = extractApiError(text);
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  return response.json() as Promise<Summary>;
+}
