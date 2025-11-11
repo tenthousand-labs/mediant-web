@@ -15,6 +15,7 @@ export type LoginActionState = {
 };
 
 const NINE_MINUTES_IN_MS = 9 * 60 * 1000;
+const TWO_WEEKS_IN_MS = 14 * 24 * 60 * 60 * 1000;
 
 export async function authenticate(
   _state: LoginActionState | null,
@@ -43,16 +44,26 @@ export async function authenticate(
       redirect('/dashboard');
     }
 
-    const token = await loginUser(credentials);
+    const tokens = await loginUser(credentials);
     const cookieStore = await cookies();
 
     cookieStore.set({
-      name: 'jwt',
-      value: token,
+      name: 'accessToken',
+      value: tokens.accessToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       expires: new Date(Date.now() + NINE_MINUTES_IN_MS),
+      path: '/',
+    });
+
+    cookieStore.set({
+      name: 'refreshToken',
+      value: tokens.refreshToken,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: new Date(Date.now() + TWO_WEEKS_IN_MS),
       path: '/',
     });
   } catch (error) {

@@ -10,7 +10,7 @@ export type VerifySessionOptions = {
 
 export const verifySession = cache(
   async ({ redirectToLogin = false }: VerifySessionOptions = {}) => {
-    const token = (await cookies()).get('jwt')?.value ?? null;
+    const token = (await cookies()).get('accessToken')?.value ?? null;
 
     if (!token && redirectToLogin) {
       redirect('/login');

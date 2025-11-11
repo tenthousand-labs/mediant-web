@@ -15,7 +15,7 @@ function extractApiError(message: FetchErrorShape | string): string {
 
 export async function loginUser(
   credentials: LoginFormInput
-): Promise<string> {
+): Promise<{ accessToken: string; refreshToken: string }> {
   const response = await fetch(`${process.env.API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -37,7 +37,10 @@ export async function loginUser(
     throw new Error(errorMessage);
   }
 
-  return response.text();
+  return response.json() as Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }>;
 }
 
 export async function getUser(token: string): Promise<User> {
