@@ -2,7 +2,10 @@
 
 import { useActionState } from 'react';
 
-import { createSummary, type SummaryActionState } from '@actions/summaries';
+import {
+  createSummary,
+  type SummaryActionState,
+} from '@/app/summaries/actions';
 import Button from '@components/ui/Button';
 import FieldError from '@components/ui/FieldError';
 import Input from '@components/ui/Input';

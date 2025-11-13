@@ -46,7 +46,9 @@ export async function exchangeGithubCodeForToken(
   return data.accessToken;
 }
 
-export async function getGithubUser(token: string): Promise<GithubUserResponse> {
+export async function getGithubUser(
+  token: string
+): Promise<GithubUserResponse> {
   const response = await fetch(`${process.env.API_URL}/auth/github/user`, {
     headers: {
       Authorization: `Bearer ${token}`,

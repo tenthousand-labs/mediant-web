@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 
-import { authenticate, type LoginActionState } from '@actions/login';
+import { authenticate, type LoginActionState } from '@/app/login/actions';
 import Button from '@components/ui/Button';
 import FieldError from '@components/ui/FieldError';
 import Input from '@components/ui/Input';
