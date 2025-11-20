@@ -1,56 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useActionState } from 'react';
 import { Input } from '@components/forms/input';
-import { login } from '@api/auth/login';
+import { logInWithPasswordAction } from './actions';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setIsLoading(true);
-
-    try {
-      const result = await login(email, password);
-      console.log('Logged in!', result);
-      // Optionally redirect or set cookies
-      window.location.href = '/dashboard';
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
+  const [state, formAction, isPending] = useActionState(
+    logInWithPasswordAction,
+    null
+  );
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-4 max-w-sm mx-auto"
-    >
-      <Input
-        label="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Input
-        label="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="rounded bg-blue-600 px-4 py-2 text-white"
+    <>
+      <h1 className="text-2xl mb-8 font-bold text-center">Log in</h1>
+      <form
+        action={formAction}
+        className="flex flex-col gap-4 max-w-sm mx-auto"
       >
-        {isLoading ? 'Logging in...' : 'Login'}
-      </button>
-      {error && <p className="text-red-500">{error}</p>}
-    </form>
+        <Input id="email" label="Email" type="email" />
+        <Input id="password" label="Password" type="password" />
+        <button
+          type="submit"
+          disabled={isPending}
+          className="rounded-xl bg-blue-600 px-4 py-2 text-white"
+        >
+          {isPending ? 'Logging in...' : 'Login'}
+        </button>
+        {state?.error && (
+          <p className="text-center text-red-500">{state.error}</p>
+        )}
+      </form>
+    </>
   );
 }

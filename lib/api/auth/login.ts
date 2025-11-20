@@ -1,12 +1,12 @@
-'use server';
+import 'server-only';
 
-import { type TokenResponse } from '@/api/auth/token-response';
+import { type TokenResponse } from '@lib/types';
 import { cookies } from 'next/headers';
 
 const NINE_MINUTES_IN_MS = 9 * 60 * 1000;
 const TWO_WEEKS_IN_MS = 14 * 24 * 60 * 60 * 1000;
 
-export async function login(email: string, password: string) {
+export async function logInWithPassword(email: string, password: string) {
   const res = await fetch(`${process.env.API_URL}/auth/login`, {
     method: 'POST',
     headers: {
@@ -17,7 +17,7 @@ export async function login(email: string, password: string) {
   });
 
   if (!res.ok) {
-    throw new Error(res.statusText);
+    throw new Error(await res.text());
   }
 
   const tokens = (await res.json()) as TokenResponse;

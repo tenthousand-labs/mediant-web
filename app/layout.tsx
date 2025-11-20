@@ -27,9 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col gap-8 p-4`}
       >
-        <Header />
+        <header>
+          <Header />
+        </header>
 
         <div
           aria-hidden="true"
@@ -44,7 +46,7 @@ export default function RootLayout({
           />
         </div>
 
-        {children}
+        <main className="flex-1">{children}</main>
 
         <div
           aria-hidden="true"
@@ -59,7 +61,9 @@ export default function RootLayout({
           />
         </div>
 
-        <Footer />
+        <footer>
+          <Footer />
+        </footer>
       </body>
     </html>
   );

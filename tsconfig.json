@@ -23,7 +23,7 @@
       "@/*": ["./*"],
       "@components/*": ["components/*"],
       "@lib/*": ["lib/*"],
-      "@api/*": ["api/*"],
+      "@api/*": ["lib/api/*"],
       "@actions/*": ["app/(routes)/*/actions"]
     }
   },
